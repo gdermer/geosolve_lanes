@@ -1,0 +1,33 @@
+# virtual envirnment- never commit
+../geosolve_env/
+geosolve_env/
+
+# model checkpoint 
+checkpoints/
+*.pth
+*.pt
+
+# python cache 
+__pychache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# data files
+*.csv
+*.zip
+data/
+
+# output files
+results/
+debug/
+
+# pycharm project files
+.idea/
+
+# os files
+.DS_Store
+Thumbs.db
+
+# jupiter notebook checkpoints 
+.ipynb_checkpoints/
