@@ -1,0 +1,233 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="RW_pcC-v15hr1BHoR96j">
+    <mxGraphModel dx="2244" dy="1953" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-26" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="phase 1:&lt;div&gt;runs once&amp;nbsp; &amp;nbsp;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="26" width="80" x="15" y="-340" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-27" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="phase 2: training&lt;div&gt;runs once for every new data layer&amp;nbsp;&amp;nbsp;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="26" width="80" x="20" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-28" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="train.py" vertex="1">
+          <mxGeometry height="480" width="100" x="40" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-29" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="dataset.py" vertex="1">
+          <mxGeometry height="390" width="100" x="200" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-30" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="model.py" vertex="1">
+          <mxGeometry height="470" width="100" x="360" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-31" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="config.py" vertex="1">
+          <mxGeometry height="480" width="100" x="520" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-32" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="checkpoints/" vertex="1">
+          <mxGeometry height="480" width="100" x="680" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-33" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="start&amp;nbsp;" vertex="1">
+          <mxGeometry height="26" width="80" x="15" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-34" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" target="K13wVFVKnpcaaEPDPhbn-31" value="read constants&amp;nbsp;">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="90" y="356" as="sourcePoint" />
+            <mxPoint x="170" y="356" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-35" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" target="K13wVFVKnpcaaEPDPhbn-30" value="build EfficientNet, load pretrained weights&amp;nbsp;">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="90" y="400" as="sourcePoint" />
+            <mxPoint x="170" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-36" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="&lt;u&gt;epoch loop:&amp;nbsp;&lt;/u&gt;" vertex="1">
+          <mxGeometry height="26" width="80" x="-10" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-37" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" target="K13wVFVKnpcaaEPDPhbn-29" value="get 32 images chuncks&amp;nbsp;">
+          <mxGeometry relative="1" width="80" x="0.0031" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="90" y="448" as="sourcePoint" />
+            <mxPoint x="170" y="448" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-38" edge="1" parent="1" source="K13wVFVKnpcaaEPDPhbn-29" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="batch ready (chunck + GPS)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="480" as="sourcePoint" />
+            <mxPoint x="90" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-39" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" target="K13wVFVKnpcaaEPDPhbn-30" value="forward pass, sends 32 chunck&amp;nbsp;">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="90" y="520" as="sourcePoint" />
+            <mxPoint x="170" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-40" edge="1" parent="1" source="K13wVFVKnpcaaEPDPhbn-30" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" target="K13wVFVKnpcaaEPDPhbn-41" value="prediction&amp;nbsp;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="560" as="sourcePoint" />
+            <mxPoint x="90" y="560" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-41" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="loss calculation&amp;nbsp;" vertex="1">
+          <mxGeometry height="26" width="80" y="547" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-43" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="forward pass&amp;nbsp;" vertex="1">
+          <mxGeometry height="26" width="80" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-44" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" target="K13wVFVKnpcaaEPDPhbn-30" value="calculate gradients&amp;nbsp;">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="90" y="610" as="sourcePoint" />
+            <mxPoint x="170" y="610" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-45" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="backwords pass&amp;nbsp;" vertex="1">
+          <mxGeometry height="26" width="80" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-46" edge="1" parent="1" source="K13wVFVKnpcaaEPDPhbn-30" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="gradients for all weights&amp;nbsp;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="650" as="sourcePoint" />
+            <mxPoint x="90" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-47" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="wright update" vertex="1">
+          <mxGeometry height="26" width="80" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-48" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" value="update weighs (reduce loss)&amp;nbsp;">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="90" y="680" as="sourcePoint" />
+            <mxPoint x="410" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-49" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="&lt;u&gt;end ephoch&lt;/u&gt;" vertex="1">
+          <mxGeometry height="26" width="80" x="-10" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-50" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" value="save best model : best.pth">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="95" y="760" as="sourcePoint" />
+            <mxPoint x="730" y="760" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-51" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="phase 3: prediction&lt;div&gt;runs with every new survey&amp;nbsp;&amp;nbsp;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="26" width="80" x="-10" y="970" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-52" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="predict.py" vertex="1">
+          <mxGeometry height="480" width="100" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-53" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="dataset.py" vertex="1">
+          <mxGeometry height="480" width="100" x="160" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-54" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="model.py" vertex="1">
+          <mxGeometry height="480" width="100" x="320" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-55" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="checkpoint/" vertex="1">
+          <mxGeometry height="480" width="100" x="480" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-56" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="output CSV" vertex="1">
+          <mxGeometry height="480" width="100" x="640" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-57" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="start" vertex="1">
+          <mxGeometry height="26" width="80" x="-40" y="1090" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-58" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" value="load checkpoints&amp;nbsp;">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="50" y="1168" as="sourcePoint" />
+            <mxPoint x="529.5" y="1167.9999999999995" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-59" edge="1" parent="1" source="K13wVFVKnpcaaEPDPhbn-55" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="return weights&amp;nbsp;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="1200" as="sourcePoint" />
+            <mxPoint x="50" y="1200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-60" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" value="load image from filepath">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="50" y="1260" as="sourcePoint" />
+            <mxPoint x="209.5" y="1259.9999999999995" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-61" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="&lt;u&gt;for each row in new survey:&lt;/u&gt;" vertex="1">
+          <mxGeometry height="26" width="80" x="-80" y="1220" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-62" edge="1" parent="1" source="K13wVFVKnpcaaEPDPhbn-53" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="image tensor + GPS fetures">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="1300" as="sourcePoint" />
+            <mxPoint x="50" y="1300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-63" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" target="K13wVFVKnpcaaEPDPhbn-54" value="predict lane (forward pass only)&amp;nbsp;">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="50" y="1360" as="sourcePoint" />
+            <mxPoint x="130" y="1360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-64" edge="1" parent="1" source="K13wVFVKnpcaaEPDPhbn-54" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="prediction: (srt) lane, (dec) confidence, (bool)needs_review">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="1400" as="sourcePoint" />
+            <mxPoint x="50" y="1400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-65" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" target="K13wVFVKnpcaaEPDPhbn-56" value="write output after all rows processed: saved csv+ confidence +needs_review flags&amp;nbsp;">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="50" y="1480" as="sourcePoint" />
+            <mxPoint x="130" y="1480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-67" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="&lt;u&gt;end&lt;/u&gt;" vertex="1">
+          <mxGeometry height="26" width="80" x="-30" y="1420" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-69" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="Me" vertex="1">
+          <mxGeometry height="450" width="100" x="40" y="-280" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-70" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="osm_preprocess.py" vertex="1">
+          <mxGeometry height="440" width="100" x="200" y="-280" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-71" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="OpenStreetMap&lt;div&gt;(database)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="440" width="100" x="360" y="-280" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-72" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="CSV file&amp;nbsp;" vertex="1">
+          <mxGeometry height="440" width="100" x="520" y="-280" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-73" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" target="K13wVFVKnpcaaEPDPhbn-70" value="download&amp;nbsp;">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="90" y="-200" as="sourcePoint" />
+            <mxPoint x="170" y="-200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-74" edge="1" parent="1" source="K13wVFVKnpcaaEPDPhbn-71" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="download NZ roads&amp;nbsp;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="-160" as="sourcePoint" />
+            <mxPoint x="250" y="-160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-75" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="&lt;u&gt;for each row in CSV :&amp;nbsp;&lt;/u&gt;" vertex="1">
+          <mxGeometry height="26" width="80" x="-20" y="-140" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-77" edge="1" parent="1" source="K13wVFVKnpcaaEPDPhbn-71" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="lookup: (bool) one_way, (int) lane_forward, (str) road_type&amp;nbsp;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="-80" as="sourcePoint" />
+            <mxPoint x="250" y="-80" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-78" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="&lt;u&gt;end&amp;nbsp;&lt;/u&gt;" vertex="1">
+          <mxGeometry height="26" width="80" x="15" y="-60" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-79" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" target="K13wVFVKnpcaaEPDPhbn-72" value="save enriched_train.csv (adds: one_way, lanes_forward, road_type, bearing_sin, bearing_cos)">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="250" y="120" as="sourcePoint" />
+            <mxPoint x="330" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-80" parent="1" style="shape=ext;double=1;rounded=0;whiteSpace=wrap;html=1;" value="result: SCV ready for training&amp;nbsp;" vertex="1">
+          <mxGeometry height="50" width="480" x="90" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-81" parent="1" style="shape=ext;double=1;rounded=0;whiteSpace=wrap;html=1;" value="result: trained model&amp;nbsp;" vertex="1">
+          <mxGeometry height="50" width="640" x="90" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="K13wVFVKnpcaaEPDPhbn-82" parent="1" style="shape=ext;double=1;rounded=0;whiteSpace=wrap;html=1;" value="result: complete CSV with predictions (file_path | Lane | confidence | needs_review)" vertex="1">
+          <mxGeometry height="50" width="640" x="50" y="1520" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
