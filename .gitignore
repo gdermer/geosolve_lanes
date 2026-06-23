@@ -31,3 +31,8 @@ Thumbs.db
 
 # jupiter notebook checkpoints 
 .ipynb_checkpoints/
+
+# data files train.csv, val.csv, test.csv- too big 
+Data/
+data/
+*.csv
