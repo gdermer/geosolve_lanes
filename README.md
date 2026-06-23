@@ -195,3 +195,17 @@ SourceFolder
 250357 UHCC_25_LMD                             73805
 250322.01 TCC_25_LMD                           28781
 250573.01 DNAPIER_LMD_26                       14952
+
+
+"C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\.venv\Scripts\python.exe" "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\main.py" 
+Traceback (most recent call last):
+  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\main.py", line 25, in <module>
+    combined = pd.concat(all_dfs, ignore_index = True)
+  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\.venv\Lib\site-packages\pandas\core\reshape\concat.py", line 407, in concat
+    objs, keys, ndims = _clean_keys_and_objs(objs, keys)
+                        ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\.venv\Lib\site-packages\pandas\core\reshape\concat.py", line 808, in _clean_keys_and_objs
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+
+Process finished with exit code 1
