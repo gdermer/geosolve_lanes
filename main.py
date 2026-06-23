@@ -1,16 +1,23 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+import pandas as pd
+import os
+from pathlib import Path
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+csv_folder = r"J:\- Macros\AI-LaneDetector\lane_analysis"
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+all_dfs = []
+for csv_file in Path(csv_folder).glob("*.csv"):
+    df = pd.read_csv(csv_file)
+    df["source_csv"] = csv_file.name   # track which file each row came from
+    all_dfs.append(df)
+    print(f"{csv_file.name}: {len(df):,} rows")
+
+# Combine all
+combined = pd.concat(all_dfs, ignore_index=True)
+
+print(f"\nTotal rows across all jobs: {len(combined):,}")
+print(f"\nAll Lane codes found:")
+print(combined["Lane"].value_counts().to_string())
+print(f"\nAll segments found:")
+print(combined["SourceFolder"].value_counts().to_string())
+
