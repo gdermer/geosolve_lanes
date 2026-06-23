@@ -19,7 +19,7 @@ CHECKPOINT_DIR = Path("checkpoints")
 CHECKPOINT_DIR.mkdir(exist_ok = True)
 
 # resize images for training
-IMG_SUZE = 224
+IMG_SIZE = 224
 
 # start with common cases later on i'll add the edge cases
 LANE_CLASSES = {
