@@ -35,7 +35,7 @@ class LaneDataset(Dataset):
     def __init__(self, csv_path, transform, path_prefix="" ):
     # constructor
     #csv_path = path to train train, csv, val.csv, test.csv
-        self.Transform = transform
+        self.transform = transform
         self.path_prefix = path_prefix
 
         print(f"[Dataset] Loading {csv_path}...")
@@ -52,9 +52,9 @@ class LaneDataset(Dataset):
 
     # print class distribution so see if imbalanced
         print(f"[Dataset] Lane distibution:")
-        for lane, count in self.df["Lane"].value_counta().items():
+        for lane, count in self.df["Lane"].value_counts().items():
             pct = count/ len(self.df)*100
-            print(f" {lane:>4}: {count:>10,} ({pct:.1f%})")
+            print(f" {lane:>4}: {count:>10,} ({pct:.1f})")
 
 
     def __len__(self):
@@ -145,8 +145,8 @@ def get_train_loader(batch_size, num_workers =0, path_prefix = ""):
         pin_memory = True if num_workers > 0 else False,
         drop_last = True,)
 
-    print(f"[DataLoader] Train : {len(dataset):,  } images, "
-          f"{len(loader) :,} batches per epoch")
+    print(f"[DataLoader] Train : {len(dataset):,} images, "
+          f"{len(loader):,} batches per epoch")
     return loader
 
 def get_val_loader(batch_size, num_workers = 0, path_prefix = ""):      # creates the validation data loader
@@ -175,7 +175,7 @@ if __name__ == "__main__":
     print("testing dataset.py...")
     print("=" *40)
 
-    loader = get_train_loader(batch_size = 4, num_workers = 0)      # get one batch and inspect it
+    loader = get_train_loader(batch_size = 4, num_workers = 0)
     images, gps, labels = next(iter(loader))
 
     print(f"\nBatch shapes:")

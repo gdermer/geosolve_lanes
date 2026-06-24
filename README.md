@@ -209,3 +209,44 @@ Traceback (most recent call last):
 ValueError: No objects to concatenate
 
 Process finished with exit code 1
+
+
+
+
+# dataset output:
+"C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\.venv\Scripts\python.exe" "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\dataset.py" 
+C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\dataset.py:19: UserWarning: Argument(s) 'var_limit' are not valid for transform GaussNoise
+  A.GaussNoise(var_limit= (10.0,50.0), p=0.3),
+testing dataset.py...
+========================================
+[Dataset] Loading Data\train.csv...
+[Dataset] 2,378,739 valid images loaded (dropped ignore)
+[Dataset] Lane distibution:
+    1:  2,278,852 (95.8)
+    2:     84,589 (3.6)
+    3:     10,721 (0.5)
+  SK1:      4,577 (0.2)
+[DataLoader] Train : 2,378,739 images, 594,684 batches per epoch
+
+Batch shapes:
+    images:      torch.Size([4, 3, 224, 224])
+    gps features: torch.Size([4, 5])
+    labels:        torch.Size([4])
+ f
+Label values: [0, 0, 0, 0]
+
+Image tensor states:
+ min:        -2.118
+ max:        2.640
+ mean: -0.265
+
+GPS features (forst image):
+lanes_forward : 1.000
+is_oneway : 0.000
+road_type : 0.000
+bearing_sin : 0.000
+bearing_cos : 1.000
+
+dataset.py isn working correctly :)
+
+Process finished with exit code 0
