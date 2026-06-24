@@ -9,8 +9,8 @@ CSV_PATH = (
 DATA_DIR = Path("Data")
 
 TRAIN_CSV = DATA_DIR / "train.csv"
-TEST_CSV = DATA_DIR / "val.csv"
-TEST_DIR = DATA_DIR / "test.csv"
+VAL_CSV = DATA_DIR / "val.csv"
+TEST_CSV = DATA_DIR / "test.csv"
 
 # saving training data folder here
 CHECKPOINT_DIR = Path("checkpoints")
