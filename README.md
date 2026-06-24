@@ -250,3 +250,48 @@ bearing_cos : 1.000
 dataset.py isn working correctly :)
 
 Process finished with exit code 0
+
+
+
+# model class testing output:
+"C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\.venv\Scripts\python.exe" "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\model.py" 
+Testing model.py..
+========================================
+[Model] Backbone: efficientnet_b0
+[Model] backbone output features: 1280
+[Model] GPS processor: 5--> 64 features
+[Model] Classifier: 1344 -> 4 classes
+[Model] Output classes: 4
+[Model] total parameters: 4,764,672
+[Model] trainable parameters: 4,764,672
+
+Input shapes:
+images: torch.Size([4, 3, 224, 224])
+GPS  torch.Size([4, 5])
+ output shape: torch.Size([4, 4])
+
+ sources for first image:
+ 1: 0.0155
+ 2: -0.0526
+ 3: -0.0550
+ SK1: -0.0228
+
+ predicted class: 0
+
+ --- freeze/ unfreeze test--
+[Model] Backbone FROZEN - only classifier trains
+[Model] total parameters: 4,764,672
+[Model] trainable parameters: 4,764,672
+[Model] backbone UNFROZEN- full fine tuining active
+[Model] total parameters: 4,764,672
+[Model] trainable parameters: 4,764,672
+
+ predicte test --
+ Image 1: {'lane': 'REVIEW', 'confidence': 0.261, 'needs_review': True}
+ Image 2: {'lane': 'REVIEW', 'confidence': 0.261, 'needs_review': True}
+ Image 3: {'lane': 'REVIEW', 'confidence': 0.261, 'needs_review': True}
+ Image 4: {'lane': 'REVIEW', 'confidence': 0.261, 'needs_review': True}
+
+model.py works correctly :)
+
+Process finished with exit code 0
