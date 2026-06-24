@@ -2,8 +2,7 @@ import torch
 import torch.nn as nn
 import timm
 import torch.nn.functional as F
-from sympy import false
-from sympy.stats.rv import probability
+
 
 from config import N_CLASSES, MODEL_NAME
 
@@ -106,7 +105,7 @@ def count_parameters(model):        # counts how many weitghs the model has
 
 def freeze_backbone(model):         # freeze efficientNet backbone weights used at the start of phase 1 training
     for param in model.backbone.parameters():       # fro all the backnbone weigths tensor
-        param.require_grad = False
+        param.requires_grad = False
     print("[Model] Backbone FROZEN - only classifier trains")
     count_parameters(model)
     return model    # print show many weights are now trainable
@@ -116,6 +115,7 @@ def unfreeze_backbone(model):       # unfreeze backbone for phase 2
         param.requires_grad = True
     print("[Model] backbone UNFROZEN- full fine tuining active")
     count_parameters(model)
+    return model
 
 
 # main

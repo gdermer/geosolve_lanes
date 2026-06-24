@@ -252,8 +252,7 @@ dataset.py isn working correctly :)
 Process finished with exit code 0
 
 
-
-# model class testing output:
+# model.py testing 
 "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\.venv\Scripts\python.exe" "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\model.py" 
 Testing model.py..
 ========================================
@@ -271,26 +270,26 @@ GPS  torch.Size([4, 5])
  output shape: torch.Size([4, 4])
 
  sources for first image:
- 1: 0.0155
- 2: -0.0526
- 3: -0.0550
- SK1: -0.0228
+ 1: 0.0311
+ 2: -0.0008
+ 3: -0.0837
+ SK1: 0.0701
 
- predicted class: 0
+ predicted class: 3
 
  --- freeze/ unfreeze test--
 [Model] Backbone FROZEN - only classifier trains
 [Model] total parameters: 4,764,672
-[Model] trainable parameters: 4,764,672
+[Model] trainable parameters: 757,124
 [Model] backbone UNFROZEN- full fine tuining active
 [Model] total parameters: 4,764,672
 [Model] trainable parameters: 4,764,672
 
  predicte test --
- Image 1: {'lane': 'REVIEW', 'confidence': 0.261, 'needs_review': True}
- Image 2: {'lane': 'REVIEW', 'confidence': 0.261, 'needs_review': True}
- Image 3: {'lane': 'REVIEW', 'confidence': 0.261, 'needs_review': True}
- Image 4: {'lane': 'REVIEW', 'confidence': 0.261, 'needs_review': True}
+ Image 1: {'lane': 'REVIEW', 'confidence': 0.267, 'needs_review': True}
+ Image 2: {'lane': 'REVIEW', 'confidence': 0.268, 'needs_review': True}
+ Image 3: {'lane': 'REVIEW', 'confidence': 0.266, 'needs_review': True}
+ Image 4: {'lane': 'REVIEW', 'confidence': 0.266, 'needs_review': True}
 
 model.py works correctly :)
 
