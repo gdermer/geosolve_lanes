@@ -28,4 +28,33 @@ VAL_TRANSFORMS = A.Compose([
 ])
 
 class LaneDataSET(Dataset):
-    """ loads road imgaes and their lanes from CSV file "
+    """ loads road imgaes and their lanes from CSV file """
+
+def __init__(self, csv_path, transform, path_prefix="" ):
+    """ constructor
+    csv_path = path to train train, csv, val.csv, test.csv """
+    self.Transform = transform
+    self.path_prefix = path_prefix
+
+    print(f"[Dataset] Loading {csv_path}...")
+    df = pd.read_csv(csv_path, low_memory=False)    # read the file into the dataframe
+    df = df[df["Lane"].isin(LANE_CLASSES)].copy()   # keep only rows with valid labels
+
+    # keep only rows with no ignore column
+    if "Ignore" in df.columns:
+        df = df[df["Ignore"] != 1.0].copy() #removes rows marked as ignore
+    #reset rows indexes after dropping the ignored ones
+    self.df = df.reset_index(drop = True)
+
+    print(f"[Dataset] {len(self.df):,} valid images loaded (dropped ignore)")
+
+    # print class distribution so see if imbalanced
+    print(f"[Dataset] Lane distibution:")
+    for lane, count in self.df["Lane"].value_counta().items():
+        pct = count/ len(self.df)*100
+        print(f" {lane:>4}: {count:>10,} ({pct:.1f%})")
+
+
+
+
+
