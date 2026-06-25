@@ -51,7 +51,7 @@ EPOCHS_PHASE2 = 30  # training epochs for phase 2
 EARLY_STOP_PATIENCE = 7 # stop if value accuracy doesnt improve for 7 epochs
 
 SEED = 42    # new random (42)
-
+NUM_WORKERS = 0
 
 
 

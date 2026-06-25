@@ -294,3 +294,36 @@ GPS  torch.Size([4, 5])
 model.py works correctly :)
 
 Process finished with exit code 0
+
+
+# train.py testing: 
+"C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\.venv\Scripts\python.exe" "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\train.py" 
+GEOSOLVE lane detection- training
+==================================================
+QUICK TEST - 2 btaches only
+========================================
+device: cpu
+[Dataset] Loading Data\train.csv...
+[Dataset] 2,378,739 valid images loaded (dropped ignore)
+[Dataset] Lane distibution:
+    1:  2,278,852 (95.8)
+    2:     84,589 (3.6)
+    3:     10,721 (0.5)
+  SK1:      4,577 (0.2)
+[DataLoader] Train : 2,378,739 images, 594,684 batches per epoch
+[Dataset] Loading Data\val.csv...
+[Dataset] 53,248 valid images loaded (dropped ignore)
+[Dataset] Lane distibution:
+    1:     53,058 (99.6)
+    2:        112 (0.2)
+  SK1:         78 (0.1)
+Traceback (most recent call last):
+  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\train.py", line 241, in <module>
+    quick_test()
+    ~~~~~~~~~~^^
+  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\train.py", line 211, in quick_test
+    val_loader = get_val_loader(batch_size =4, num_workers=0)
+  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\dataset.py", line 159, in get_val_loader
+    print (f"[DataLoader] val: {len(dataset):, } images, "
+                               ^^^^^^^^^^^^^^^^^
+ValueError: Cannot specify ',' with '\x20'.
