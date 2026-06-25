@@ -331,3 +331,41 @@ device: cpu
  quick test passed - training loop work correctly! 
 
 Process finished with exit code 0
+
+# 10% data training: 1000 batch output (18 hours run):
+its still running: "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\.venv\Scripts\python.exe" "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\train.py" 
+GeoSolve Lane Detection — Training
+==================================================
+[Train] Using device: cpu
+[Train] Loading data...
+[Dataset] Loading Data\train_small.csv...
+[Dataset] 229,172 valid images loaded (dropped ignore)
+[Dataset] Lane distibution:
+    1:    219,444 (95.8)
+    2:      8,225 (3.6)
+    3:      1,077 (0.5)
+  SK1:        426 (0.2)
+[DataLoader] Train : 229,172 images, 7,161 batches per epoch
+[Dataset] Loading Data\val.csv...
+[Dataset] 385,527 valid images loaded (dropped ignore)
+[Dataset] Lane distibution:
+    1:    372,995 (96.7)
+    2:     10,377 (2.7)
+  SK1:      1,470 (0.4)
+    3:        685 (0.2)
+[DataLoader] val: 385,527 images, 12,048 batches
+[Train] Building model...
+[Model] Backbone: efficientnet_b0
+[Model] backbone output features: 1280
+[Model] GPS processor: 5--> 64 features
+[Model] Classifier: 1344 -> 4 classes
+[Model] Output classes: 4
+==================================================
+PHASE 1 — Frozen backbone
+==================================================
+[Model] Backbone FROZEN - only classifier trains
+[Model] total parameters: 4,764,672
+[Model] trainable parameters: 757,124
+Phase 1 | Epoch 1/5
+  Epoch 1 | Batch 1000/7161 | Loss: 0.3797 | Elapsed: 25807s
+  Epoch 1 | Batch 2000/7161 | Loss: 0.2848 | Elapsed: 50515s
