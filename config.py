@@ -8,7 +8,7 @@ CSV_PATH = (
 
 DATA_DIR = Path("Data")
 
-TRAIN_CSV = DATA_DIR / "train.csv"
+TRAIN_CSV = DATA_DIR / "train_small.csv"
 VAL_CSV = DATA_DIR / "val.csv"
 TEST_CSV = DATA_DIR / "test.csv"
 
