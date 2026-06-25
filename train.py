@@ -236,8 +236,8 @@ def quick_test():
             labels = labels.to(device)
             logits = model(images, gsp)
             loss = criterion(logits, labels)
-            predicted = logits.argmax(logits, labels)
-            correct = (predicted == labels).sun().item()
+            predicted = logits.argmax(dim=1)
+            correct = (predicted == labels).sum().item()
             print(f" vla batch {batch_idx+1} | "
                   f"loss: {loss.item():.4f} | "
                   f"correct: {correct}/4")

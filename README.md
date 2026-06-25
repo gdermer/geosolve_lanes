@@ -323,14 +323,11 @@ device: cpu
 [Model] GPS processor: 5--> 64 features
 [Model] Classifier: 1344 -> 4 classes
 [Model] Output classes: 4
- batch 1 | loss: 1.3859
- batch 2 | loss: 1.1453
-Traceback (most recent call last):
-  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\train.py", line 256, in <module>
-    quick_test()
-    ~~~~~~~~~~^^
-  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\train.py", line 239, in quick_test
-    predicted = logits.argmax(logits, labels)
-TypeError: argmax(): argument 'dim' (position 1) must be int, not Tensor
+ batch 1 | loss: 1.3221
+ batch 2 | loss: 1.0387
+ vla batch 1 | loss: 1.2227 | correct: 4/4
+ vla batch 2 | loss: 1.2227 | correct: 4/4
 
-Process finished with exit code 1
+ quick test passed - training loop work correctly! 
+
+Process finished with exit code 0
