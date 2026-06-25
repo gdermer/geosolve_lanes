@@ -156,7 +156,7 @@ def get_val_loader(batch_size, num_workers = 0, path_prefix = ""):      # create
     loader = DataLoader(
         dataset, batch_size = batch_size, shuffle = False, num_workers= num_workers, pin_memory=True if num_workers>0 else False, drop_last= False)
 
-    print (f"[DataLoader] val: {len(dataset):, } images, "
+    print (f"[DataLoader] val: {len(dataset):,} images, "
            f"{len(loader):,} batches")
     return loader
 

@@ -317,13 +317,20 @@ device: cpu
     1:     53,058 (99.6)
     2:        112 (0.2)
   SK1:         78 (0.1)
+[DataLoader] val: 53,248 images, 13,312 batches
+[Model] Backbone: efficientnet_b0
+[Model] backbone output features: 1280
+[Model] GPS processor: 5--> 64 features
+[Model] Classifier: 1344 -> 4 classes
+[Model] Output classes: 4
+ batch 1 | loss: 1.3859
+ batch 2 | loss: 1.1453
 Traceback (most recent call last):
-  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\train.py", line 241, in <module>
+  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\train.py", line 256, in <module>
     quick_test()
     ~~~~~~~~~~^^
-  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\train.py", line 211, in quick_test
-    val_loader = get_val_loader(batch_size =4, num_workers=0)
-  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\dataset.py", line 159, in get_val_loader
-    print (f"[DataLoader] val: {len(dataset):, } images, "
-                               ^^^^^^^^^^^^^^^^^
-ValueError: Cannot specify ',' with '\x20'.
+  File "C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\train.py", line 239, in quick_test
+    predicted = logits.argmax(logits, labels)
+TypeError: argmax(): argument 'dim' (position 1) must be int, not Tensor
+
+Process finished with exit code 1

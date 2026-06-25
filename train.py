@@ -228,9 +228,24 @@ def quick_test():
         if batch_idx>=1:
             break
 
+    model.eval()
+    with torch.no_grad():
+        for batch_idx, (images, gps, labels) in enumerate(val_loader):
+            images = images.to(device)
+            gsp = gps.to(device)
+            labels = labels.to(device)
+            logits = model(images, gsp)
+            loss = criterion(logits, labels)
+            predicted = logits.argmax(logits, labels)
+            correct = (predicted == labels).sun().item()
+            print(f" vla batch {batch_idx+1} | "
+                  f"loss: {loss.item():.4f} | "
+                  f"correct: {correct}/4")
 
-    val_loss, val_acc = evaluate(model, val_loader, criterion, device)
-    print(f" val loss: {val_loss:.4f} | val acc: {val_acc:.2f} %")
+            if batch_idx>=1:
+                break
+
+
     print("\n quick test passed - training loop work correctly! ")
 
 
