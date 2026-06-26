@@ -10,6 +10,9 @@ from torch.utils.data import DataLoader
 import time
 import os
 from pathlib import Path
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 from config import (
     BATCH_SIZE,
@@ -30,6 +33,53 @@ from model import get_model, freeze_backbone, unfreeze_backbone, count_parameter
 # ================================================================
 # TRAIN ONE EPOCH
 # ================================================================
+def plot_training_progress(
+    train_losses, val_losses, val_accuracies, phase, save_path = "checkpoints/training_progress.png"):
+    epochs = list(range(1, len(train_losses)+1))
+    fig, (ax1, ax2) = plt.subplot(1, 2, figsize = (12, 5))
+    fig.subtitle(f"geosolve lane detecion- phase {phase} training progress", fontsize = 14, fontweight = "bold")
+    ax1.plot(epochs, train_losses, "b-0", label = "train loss", lonewidth = 2, markersize = 6,)
+    ax1.plot(epochs, val_losses, "r--s", label = "val loss", linewidth = 2, markersize = 6,)
+    ax1.set_title("loss over ephochs")
+    ax1.set_xlabel("Epoch")
+    ax1.set_ylabel("loss")
+    ax1.legend()
+    ax1.grid(True, alpha = 0.3)
+    ax1.set_xticks(epochs)
+    if train_losses:
+        ax1.annotate(f"{train_losses[-1]:.3f}", xytext = (5,5), textcoords = "offset points", fontsize = 9, color = "blue")
+    if val_losses:
+        ax1.annotate(f"{val_losses[-1]:.3f}", xy = (epochs[-1], val_losses[-1]), xytext = (5,-12), textcoords = "offset points", fontsize =9, color = "red")
+
+    ax2.plot(epochs, val_accuracies, "g-^", label = "val accuracy", linewidth = 2, markersize = 6,)
+    ax2.set_title("Validation accuracy over epochs")
+    ax2.set_xlabel("epochs")
+    ax2.set_tlabel("accuracy (%)")
+    ax2.legend()
+    ax2.grid(True, alpha = 0.3)
+    ax2.set_xticks(epochs)
+
+    if val_accuracies:
+        best_acc = max(val_accuracies)
+        best_epoch = val_accuracies.index(best_acc+1)
+        ax2.axhline(y = best_acc, color = "green", linestyle = ":", alpha = 0.5, label = f"best: {best_acc:.2f}%")
+        ax2.annotate(f"best: {best_acc:.2f}%\n(epoch {best_epoch}", xy = (best_epoch, best_acc), xytest= (10,-20), testcoords = "offset points", color = "green", arrowprops = dict(arrowstyle="->", color = "green", lw =1))
+        ax2.legend()
+    ax2.axhline(y = 95.0, color = "orange", linestyle = "--", alpha = 0.4, label = "target: 95%")
+    ax2.text(0.02, 95.5, "target 95%", transform = ax2.get_xaxis_transform(), fontsize = 8, color = "orange", alpha = 0.7)
+    plt.tight_layout()
+    plt.savefig(save_path, dpi = 100, bbox_inches = "tight")
+    plt.close(fig)
+    print(f"[Plot] saved training progress {save_path}")
+
+
+
+
+
+
+
+
+
 
 def train_one_epoch(model, loader, optimiser, criterion, device, epoch):
     """
@@ -189,7 +239,7 @@ def train():
 
 
     # ============================================================
-    # PHASE 1 — FROZEN BACKBONE
+    # PHASE 1 - FROZEN BACKBONE
     # ============================================================
     # Only classifier + GPS processor train
     # Backbone stays frozen at pretrained ImageNet weights
@@ -209,11 +259,14 @@ def train():
     # frozen backbone excluded
 
     best_val_accuracy_p1 = 0.0
+    train_losses_p1 = []
+    val_losses_p1 = []
+    val_accuracies_p1 = []
 
     for epoch in range(1, EPOCHS_PHASE1 + 1):
         print(f"\nPhase 1 | Epoch {epoch}/{EPOCHS_PHASE1}")
 
-        train_one_epoch(
+        train_loss = train_one_epoch(
             model, train_loader, optimiser_phase1,
             criterion, device, epoch
         )
@@ -224,6 +277,13 @@ def train():
 
         print(f"  Val loss: {val_loss:.4f} | "
               f"Val accuracy: {val_accuracy:.2f}%")
+        train_losses_p1.append(train_loss)
+        val_losses_p1.append(val_loss)
+        val_accuracies_p1.append(val_accuracy)
+
+        plot_training_progress(train_losses_p1, val_losses_p1, val_accuracies_p1, phase = 1, save_path = r"C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\checkpoints/phase1_progress.png")
+
+
 
         if val_accuracy > best_val_accuracy_p1:
             best_val_accuracy_p1 = val_accuracy
@@ -243,7 +303,7 @@ def train():
 
 
     # ============================================================
-    # PHASE 2 — FULL FINE-TUNING
+    # PHASE 2  FULL FINE-TUNING
     # ============================================================
     # Entire network trains with small learning rate
     # Backbone gently adapts to NZ road images
@@ -277,11 +337,14 @@ def train():
 
     best_val_accuracy_p2 = 0.0
     no_improve_count     = 0
+    train_losses_p2 = []
+    val_losses_p2 = []
+    val_accuracies_p2 = []
 
     for epoch in range(1, EPOCHS_PHASE2 + 1):
         print(f"\nPhase 2 | Epoch {epoch}/{EPOCHS_PHASE2}")
 
-        train_one_epoch(
+        train_loss = train_one_epoch(
             model, train_loader, optimiser_phase2,
             criterion, device, epoch
         )
@@ -293,8 +356,14 @@ def train():
         print(f"  Val loss: {val_loss:.4f} | "
               f"Val accuracy: {val_accuracy:.2f}%")
 
-        scheduler.step(val_accuracy)
 
+
+        train_losses_p2.append(train_loss)
+        val_losses_p2.append(val_loss)
+        val_accuracies_p2.append(val_accuracy)
+
+        plot_training_progress(train_losses_p2, val_losses_p2, val_accuracies_p2, phase = 2, save_path = r"C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\checkpoints/phase2_progress.png")
+        scheduler.step(val_accuracy)
         if val_accuracy > best_val_accuracy_p2:
             best_val_accuracy_p2 = val_accuracy
             no_improve_count     = 0
@@ -351,6 +420,7 @@ def quick_test():
         loss   = criterion(logits, labels)
         loss.backward()
         optimiser.step()
+
         print(f"  Train batch {batch_idx+1} | loss: {loss.item():.4f}")
         if batch_idx >= 1:
             break
@@ -381,5 +451,5 @@ def quick_test():
 if __name__ == "__main__":
     print("GeoSolve Lane Detection — Training")
     print("=" * 50)
-    # quick_test()  # uncomment to test before training
-    train()
+    quick_test()  # uncomment to test before training
+    #train()
