@@ -489,5 +489,5 @@ def quick_test():
 if __name__ == "__main__":
     print("GeoSolve Lane Detection — Training")
     print("=" * 50)
-    quick_test()  # uncomment to test before training
-    #train()
+    #quick_test()  # uncomment to test before training
+    train()

@@ -4,9 +4,7 @@ import cv2
 
 import numpy as np
 import pandas as pd
-import self
 import torch
-from pydantic.experimental.pipeline import transform
 from torch.utils.data import Dataset, DataLoader
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
@@ -19,7 +17,7 @@ TRAIN_TRANSFORMS = A.Compose([
     A.GaussNoise( p=0.3),
     A.RandomShadow(shadow_roi=(0,0.4, 1,1), p=0.2),
     A.Blur(blur_limit=3, p=0.2),
-    A.Normalize(mean = [0.485, 0.465, 0.406], std= [0.229, 0.224, 0.225]),
+    A.Normalize(mean = [0.485, 0.456, 0.406], std= [0.229, 0.224, 0.225]),
     ToTensorV2()
     ])
 
@@ -112,14 +110,14 @@ class LaneDataset(Dataset):
 
         # lanes forward : how many lanes go in the van;'s direction
         # from OSM preprocessing (0 if not yet added to the csv)
-        lanes_forward = float(row.get("lanes forward", 1))
+        lanes_forward = float(row.get("lanes_forward", 1))
         is_oneway = float(row.get("oneway", 0))  # is this a one way road?
         road_type_map= {
             "motorway": 3.0, "primary": 2.0, "secondary": 1.0, "residential" : 0.0, "unknown": 0.0}        # encode road type as a number
         road_type_str = str(row.get("road_type", "unknown"))       # return road type and unknown as default
         road_type = road_type_map.get(road_type_str, 0.0)
 
-        bearing = float(row.get("bearing", 0))
+        bearing = float(row.get("Bearing", 0))
         if bearing > 360:
             bearing = 0.0          # in case of bearing 1000 unknown
 
