@@ -395,3 +395,52 @@ try:
     print(f"File size: {Path(save_path).stat().st_size} bytes")
 except Exception as e:
     print(f"ERROR: {e}")
+
+
+training 1 : (J drive validation photos):
+(geosolve_venv) PS J:\geosolve_training> C:\geosolve_venv\Scripts\python.exe train.py
+GeoSolve Lane Detection — Training
+==================================================
+[Train] Loading data...
+[Dataset] Loading Data\train_local.csv...
+[Dataset] 229,172 valid images loaded (dropped ignore)
+[Dataset] Lane distibution:
+    1:    219,444 (95.8)
+    2:      8,225 (3.6)
+    3:      1,077 (0.5)
+  SK1:        426 (0.2)
+[DataLoader] Train : 229,172 images, 7,161 batches per epoch
+[Dataset] Loading Data\val.csv...
+[Dataset] 385,527 valid images loaded (dropped ignore)
+[Dataset] Lane distibution:
+    1:    372,995 (96.7)
+    2:     10,377 (2.7)
+  SK1:      1,470 (0.4)
+    3:        685 (0.2)
+[DataLoader] val: 385,527 images, 12,048 batches
+[Train] Using device: cuda
+[Train] Building model...
+[Model] Backbone: efficientnet_b0
+[Model] backbone output features: 1280
+[Model] GPS processor: 5--> 64 features
+[Model] Classifier: 1344 -> 4 classes
+[Model] Output classes: 4
+
+==================================================
+PHASE 1 — Frozen backbone
+==================================================
+[Model] Backbone FROZEN - only classifier trains
+[Model] total parameters: 4,764,672
+[Model] trainable parameters: 757,124
+
+Phase 1 | Epoch 1/5
+  Epoch 1 | Batch 1000/7161 | Loss: 0.4115 | Elapsed: 798s
+  Epoch 1 | Batch 2000/7161 | Loss: 0.4023 | Elapsed: 1599s
+  Epoch 1 | Batch 3000/7161 | Loss: 2.5132 | Elapsed: 2384s
+[Dataset] WARNING : could non load C:/geosolve_images/Testing/250816 SouthlandDC_NetworkLMD_25/Photos/QFM954-2026-02-08-NZST/QFM954-2026-02-08-03-22-002/250816-2026-02-08-03-15-25-624-4632.4834S-16901.4067E-98.9-1-0-QFM954---F-.jpg
+  Epoch 1 | Batch 4000/7161 | Loss: 0.6560 | Elapsed: 3228s
+  Epoch 1 | Batch 5000/7161 | Loss: 0.4123 | Elapsed: 4032s
+  Epoch 1 | Batch 6000/7161 | Loss: 0.3478 | Elapsed: 4851s
+  Epoch 1 | Batch 7000/7161 | Loss: 0.3363 | Elapsed: 5693s
+  Epoch 1 complete | Avg loss: 0.8550 | Train accuracy: 80.1% | Time: 5821s
+(geosolve_venv) PS J:\geosolve_training> Stop-Process -Name python -ForceStop-Process -Name python -Force
