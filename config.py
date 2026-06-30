@@ -36,7 +36,7 @@ N_CLASSES = len(LANE_CLASSES)   # 4 at the miment
 
 MODEL_NAME = "efficientnet_b0" # from TIMM library,  b0 = smallest and fastest EfficientNet,  upgrade to b2 or b4 later if accuracy needs improvement
 
-BATCH_SIZE = 32 # images processed together
+BATCH_SIZE = 64 # images processed together
 
 SEQ_LEN = 10     #consecutive fed to the model at once
 
@@ -51,7 +51,7 @@ EPOCHS_PHASE2 = 30  # training epochs for phase 2
 EARLY_STOP_PATIENCE = 7 # stop if value accuracy doesnt improve for 7 epochs
 
 SEED = 42    # new random (42)
-NUM_WORKERS = 0
+NUM_WORKERS = 4
 
 TEST_SEGMENTS = [
     "250357 UHCC_25_LMD",

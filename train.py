@@ -34,43 +34,81 @@ from model import get_model, freeze_backbone, unfreeze_backbone, count_parameter
 # TRAIN ONE EPOCH
 # ================================================================
 def plot_training_progress(
-    train_losses, val_losses, val_accuracies, phase, save_path = "checkpoints/training_progress.png"):
-    epochs = list(range(1, len(train_losses)+1))
-    fig, (ax1, ax2) = plt.subplot(1, 2, figsize = (12, 5))
-    fig.subtitle(f"geosolve lane detecion- phase {phase} training progress", fontsize = 14, fontweight = "bold")
-    ax1.plot(epochs, train_losses, "b-0", label = "train loss", lonewidth = 2, markersize = 6,)
-    ax1.plot(epochs, val_losses, "r--s", label = "val loss", linewidth = 2, markersize = 6,)
-    ax1.set_title("loss over ephochs")
-    ax1.set_xlabel("Epoch")
-    ax1.set_ylabel("loss")
-    ax1.legend()
-    ax1.grid(True, alpha = 0.3)
-    ax1.set_xticks(epochs)
-    if train_losses:
-        ax1.annotate(f"{train_losses[-1]:.3f}", xytext = (5,5), textcoords = "offset points", fontsize = 9, color = "blue")
-    if val_losses:
-        ax1.annotate(f"{val_losses[-1]:.3f}", xy = (epochs[-1], val_losses[-1]), xytext = (5,-12), textcoords = "offset points", fontsize =9, color = "red")
+    train_losses, val_losses, val_accuracies, phase, save_path=None
+):
+    if save_path is None:
+        save_path = CHECKPOINT_DIR / f"phase{phase}_progress.png"
 
-    ax2.plot(epochs, val_accuracies, "g-^", label = "val accuracy", linewidth = 2, markersize = 6,)
+    epochs = list(range(1, len(train_losses) + 1))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    fig.suptitle(
+        f"GeoSolve Lane Detection — Phase {phase} Training Progress",
+        fontsize=14,
+        fontweight="bold"
+    )
+
+    ax1.plot(epochs, train_losses, "b-o", label="Train loss", linewidth=2, markersize=6)
+    ax1.plot(epochs, val_losses, "r--s", label="Val loss", linewidth=2, markersize=6)
+    ax1.set_title("Loss over epochs")
+    ax1.set_xlabel("Epoch")
+    ax1.set_ylabel("Loss")
+    ax1.legend()
+    ax1.grid(True, alpha=0.3)
+    ax1.set_xticks(epochs)
+
+    if train_losses:
+        ax1.annotate(
+            f"{train_losses[-1]:.3f}",
+            xy=(epochs[-1], train_losses[-1]),
+            xytext=(5, 5),
+            textcoords="offset points",
+            fontsize=9,
+            color="blue"
+        )
+    if val_losses:
+        ax1.annotate(
+            f"{val_losses[-1]:.3f}",
+            xy=(epochs[-1], val_losses[-1]),
+            xytext=(5, -12),
+            textcoords="offset points",
+            fontsize=9,
+            color="red"
+        )
+
+    ax2.plot(epochs, val_accuracies, "g-^", label="Val accuracy", linewidth=2, markersize=6)
     ax2.set_title("Validation accuracy over epochs")
-    ax2.set_xlabel("epochs")
-    ax2.set_tlabel("accuracy (%)")
+    ax2.set_xlabel("Epoch")
+    ax2.set_ylabel("Accuracy (%)")
     ax2.legend()
-    ax2.grid(True, alpha = 0.3)
+    ax2.grid(True, alpha=0.3)
     ax2.set_xticks(epochs)
 
     if val_accuracies:
         best_acc = max(val_accuracies)
-        best_epoch = val_accuracies.index(best_acc+1)
-        ax2.axhline(y = best_acc, color = "green", linestyle = ":", alpha = 0.5, label = f"best: {best_acc:.2f}%")
-        ax2.annotate(f"best: {best_acc:.2f}%\n(epoch {best_epoch}", xy = (best_epoch, best_acc), xytest= (10,-20), testcoords = "offset points", color = "green", arrowprops = dict(arrowstyle="->", color = "green", lw =1))
+        best_epoch = val_accuracies.index(best_acc) + 1
+        ax2.axhline(y=best_acc, color="green", linestyle=":", alpha=0.5, label=f"Best: {best_acc:.2f}%")
+        ax2.annotate(
+            f"Best: {best_acc:.2f}%\n(epoch {best_epoch})",
+            xy=(best_epoch, best_acc),
+            xytext=(10, -20),
+            textcoords="offset points",
+            fontsize=9,
+            color="green",
+            arrowprops=dict(arrowstyle="->", color="green", lw=1)
+        )
         ax2.legend()
-    ax2.axhline(y = 95.0, color = "orange", linestyle = "--", alpha = 0.4, label = "target: 95%")
-    ax2.text(0.02, 95.5, "target 95%", transform = ax2.get_xaxis_transform(), fontsize = 8, color = "orange", alpha = 0.7)
+
+    ax2.axhline(y=95.0, color="orange", linestyle="--", alpha=0.4, label="Target: 95%")
+    ax2.text(
+        0.02, 95.5, "target 95%",
+        transform=ax2.get_xaxis_transform(),
+        fontsize=8, color="orange", alpha=0.7
+    )
+
     plt.tight_layout()
-    plt.savefig(save_path, dpi = 100, bbox_inches = "tight")
+    plt.savefig(save_path, dpi=100, bbox_inches="tight")
     plt.close(fig)
-    print(f"[Plot] saved training progress {save_path}")
+    print(f"[Plot] saved training progress → {save_path}")
 
 
 
@@ -281,7 +319,7 @@ def train():
         val_losses_p1.append(val_loss)
         val_accuracies_p1.append(val_accuracy)
 
-        plot_training_progress(train_losses_p1, val_losses_p1, val_accuracies_p1, phase = 1, save_path = r"C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\checkpoints/phase1_progress.png")
+        plot_training_progress(train_losses_p1, val_losses_p1, val_accuracies_p1, phase=1)
 
 
 
@@ -362,7 +400,7 @@ def train():
         val_losses_p2.append(val_loss)
         val_accuracies_p2.append(val_accuracy)
 
-        plot_training_progress(train_losses_p2, val_losses_p2, val_accuracies_p2, phase = 2, save_path = r"C:\Users\gd\New folder\project\geosolve_lanes\geosolve_lanes\checkpoints/phase2_progress.png")
+        plot_training_progress(train_losses_p2, val_losses_p2, val_accuracies_p2, phase=2)
         scheduler.step(val_accuracy)
         if val_accuracy > best_val_accuracy_p2:
             best_val_accuracy_p2 = val_accuracy

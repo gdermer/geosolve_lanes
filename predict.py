@@ -63,7 +63,7 @@ class PredictionDataset(Dataset):
 
         bearing_rad = np.radians(bearing)
 
-        gps_features = torch.twnsor([float(row.get("lanes_forward", 1)),
+        gps_features = torch.tensor([float(row.get("lanes_forward", 1)),
                                      float(row.get("oneway", 0)),
                                      0.0,
                                      float(np.sin(bearing_rad)),
