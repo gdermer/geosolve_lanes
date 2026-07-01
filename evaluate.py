@@ -1,7 +1,6 @@
 import torch
 import numpy as np
 import matplotlib
-from networkx.algorithms import node_classification
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -21,7 +20,7 @@ def compute_confusion_matrix(all_labels, all_predictions, n_classes):
 
 def plot_confusion_matrix(matrix, class_names, save_path):
     # saved visual confusion matrix as a PNG file
-    fig, ax = plt.subplot(figsize = (7,8))
+    fig, ax = plt.subplots(figsize = (7,8))
     row_sums = matrix.sum(axis = 1, keepdims = True)
     matrix_pct = matrix/ row_sums*100
     im = ax.imshow(matrix_pct, interpolation="nearest", cmap = "Blues")
@@ -31,7 +30,7 @@ def plot_confusion_matrix(matrix, class_names, save_path):
     ax.set_xticklabels(class_names, rotation = 45, ha = "right")
     ax.set_yticklabels(class_names)
 
-    ax.set_xlabels("Predicted lanes")
+    ax.set_xlabel("Predicted lanes")
     ax.set_ylabel("actual lane")
     ax.set_title("confusion matrix - test set \n(% of each actual class)")
     for i in range(N_CLASSES):
@@ -65,7 +64,7 @@ def evaluate_model(checkpoint_path, device = "cpu"):
     all_confidences = []
 
     with torch.no_grad():
-        for batch_idx, (image, gps, labels) in enumerate(test_loader):
+        for batch_idx, (images, gps, labels) in enumerate(test_loader):
             images = images.to(device)
             gps = gps.to(device)
             labels = labels.to(device)
@@ -79,9 +78,8 @@ def evaluate_model(checkpoint_path, device = "cpu"):
             if (batch_idx+1)%500==0:
                 print(f" processed {(batch_idx+1)* BATCH_SIZE:,} images..")
 
-
     all_labels = np.array(all_labels)
-    all_confidences = np.array(all_predictions)
+    all_predictions = np.array(all_predictions)
     all_confidences = np.array(all_confidences)
 
 
@@ -100,6 +98,7 @@ def evaluate_model(checkpoint_path, device = "cpu"):
         class_mask = all_labels == class_idx
         if class_mask.sum() ==0:
             print(f" {class_names[class_idx]:>4}: no test samples")
+            continue
         class_correct = (all_predictions[class_mask] == class_idx).sum()
         class_total = class_mask.sum()
         class_accuracy = class_correct/ class_total *100
@@ -108,7 +107,7 @@ def evaluate_model(checkpoint_path, device = "cpu"):
               f"{class_correct:>10,} / "
               f"{class_total:>8,}   "
               f"{class_accuracy:>8.2f}% "
-              f"{class_confidence:?8.2f}%")
+              f"{class_confidence:8.2f}%")
 
 
     # confidence analysis:
