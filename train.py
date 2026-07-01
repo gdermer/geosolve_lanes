@@ -142,22 +142,24 @@ def train_one_epoch(model, loader, optimiser, criterion, device, epoch):
         # STEP 2: forward pass
         logits = model(images, gps)
 
-        # STEP 3: calculate loss
         loss = criterion(logits, labels)
+
+        # skip NaN batches BEFORE backward — prevent gradient corruption
+        if torch.isnan(loss) or torch.isinf(loss):
+            print(f"  WARNING: NaN loss at batch {batch_idx + 1}, skipping")
+            optimiser.zero_grad()
+            continue
 
         # STEP 4: backward pass
         loss.backward()
 
-        # prevent NaN loss from exploding gradients
+        # prevent gradient explosion
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
 
         # STEP 5: update weights
         optimiser.step()
 
-        # skip NaN batches — don't let one bad batch ruin the epoch
-        if torch.isnan(loss) or torch.isinf(loss):
-            print(f"  WARNING: NaN loss at batch {batch_idx+1}, skipping")
-            continue
+
 
         # track statistics
         total_loss   += loss.item()
@@ -268,7 +270,7 @@ def train():
         [total_count / (N_CLASSES * count) for count in class_counts],
         dtype=torch.float32
     ).to(device)
-    criterion = nn.CrossEntropyLoss(weight=class_weights)
+    criterion = nn.CrossEntropyLoss()
 
     # ============================================================
     # PHASE 1 — FROZEN BACKBONE
