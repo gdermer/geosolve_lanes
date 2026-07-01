@@ -13,6 +13,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from torch.utils.tensorboard import SummaryWriter
 
 from config import (
     BATCH_SIZE,
@@ -31,8 +32,9 @@ from model import get_model, freeze_backbone, unfreeze_backbone, count_parameter
 
 
 # ================================================================
-# TRAIN ONE EPOCH
+# PLOT TRAINING PROGRESS
 # ================================================================
+
 def plot_training_progress(
     train_losses, val_losses, val_accuracies, phase, save_path=None
 ):
@@ -84,7 +86,7 @@ def plot_training_progress(
     ax2.set_xticks(epochs)
 
     if val_accuracies:
-        best_acc = max(val_accuracies)
+        best_acc   = max(val_accuracies)
         best_epoch = val_accuracies.index(best_acc) + 1
         ax2.axhline(y=best_acc, color="green", linestyle=":", alpha=0.5, label=f"Best: {best_acc:.2f}%")
         ax2.annotate(
@@ -111,13 +113,9 @@ def plot_training_progress(
     print(f"[Plot] saved training progress → {save_path}")
 
 
-
-
-
-
-
-
-
+# ================================================================
+# TRAIN ONE EPOCH
+# ================================================================
 
 def train_one_epoch(model, loader, optimiser, criterion, device, epoch):
     """
@@ -126,8 +124,6 @@ def train_one_epoch(model, loader, optimiser, criterion, device, epoch):
     Returns average loss across all batches this epoch.
     """
     model.train()
-    # switch to training mode
-    # enables dropout, calculates fresh batch norm stats
 
     total_loss   = 0.0
     correct      = 0
@@ -136,36 +132,32 @@ def train_one_epoch(model, loader, optimiser, criterion, device, epoch):
 
     for batch_idx, (images, gps, labels) in enumerate(loader):
 
-        # move data to device (CPU or GPU)
         images = images.to(device)
         gps    = gps.to(device)
         labels = labels.to(device)
 
         # STEP 1: zero gradients
         optimiser.zero_grad()
-        # must do before every forward pass
-        # PyTorch accumulates gradients by default
-        # if we don't zero them, old gradients add to new ones
 
         # STEP 2: forward pass
         logits = model(images, gps)
-        # run all images through the model
-        # logits shape: (batch_size, 4)
 
         # STEP 3: calculate loss
         loss = criterion(logits, labels)
-        # how wrong was the model on average for this batch?
-        # one number — higher = more wrong
 
         # STEP 4: backward pass
         loss.backward()
-        # PyTorch calculates gradients for ALL weights
-        # which weights caused the mistake and by how much?
+
+        # prevent NaN loss from exploding gradients
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
 
         # STEP 5: update weights
         optimiser.step()
-        # nudge all weights in direction that reduces loss
-        # weight = weight - (learning_rate × gradient)
+
+        # skip NaN batches — don't let one bad batch ruin the epoch
+        if torch.isnan(loss) or torch.isinf(loss):
+            print(f"  WARNING: NaN loss at batch {batch_idx+1}, skipping")
+            continue
 
         # track statistics
         total_loss   += loss.item()
@@ -181,8 +173,8 @@ def train_one_epoch(model, loader, optimiser, criterion, device, epoch):
                   f"Loss: {loss.item():.4f} | "
                   f"Elapsed: {elapsed:.0f}s")
 
-    avg_loss       = total_loss / len(loader)
-    train_accuracy = correct / total_images * 100
+    avg_loss       = total_loss / max(len(loader), 1)
+    train_accuracy = correct / max(total_images, 1) * 100
     epoch_time     = time.time() - start_time
 
     print(f"  Epoch {epoch} complete | "
@@ -204,32 +196,31 @@ def evaluate(model, loader, criterion, device):
     Returns (val_loss, val_accuracy).
     """
     model.eval()
-    # switch to evaluation mode
-    # disables dropout for consistent results
 
     total_loss   = 0.0
     correct      = 0
     total_images = 0
 
     with torch.no_grad():
-        # no gradient tracking needed
-        # saves memory and speeds up evaluation
-
         for images, gps, labels in loader:
             images = images.to(device)
             gps    = gps.to(device)
             labels = labels.to(device)
 
-            logits    = model(images, gps)
-            loss      = criterion(logits, labels)
-            predicted = logits.argmax(dim=1)
+            logits = model(images, gps)
+            loss   = criterion(logits, labels)
 
+            # skip NaN batches
+            if torch.isnan(loss) or torch.isinf(loss):
+                continue
+
+            predicted = logits.argmax(dim=1)
             total_loss   += loss.item()
             correct      += (predicted == labels).sum().item()
             total_images += labels.size(0)
 
-    avg_loss     = total_loss / len(loader)
-    val_accuracy = correct / total_images * 100
+    avg_loss     = total_loss / max(len(loader), 1)
+    val_accuracy = correct / max(total_images, 1) * 100
 
     return avg_loss, val_accuracy
 
@@ -264,10 +255,14 @@ def train():
     print("[Train] Building model...")
     model = get_model(pretrained=True).to(device)
 
+    # setup TensorBoard writer
+    writer = SummaryWriter(log_dir="runs/geosolve_training")
+    print("[Train] TensorBoard logging to: runs/geosolve_training")
+    print("[Train] Run: tensorboard --logdir=runs")
+
     # loss function with class weights
     # handles imbalance: Lane1=95.8%, SK1=0.2%
     class_counts  = [2193795, 82741, 10709, 4480]
-    # updated to match our actual train split counts
     total_count   = sum(class_counts)
     class_weights = torch.tensor(
         [total_count / (N_CLASSES * count) for count in class_counts],
@@ -275,31 +270,25 @@ def train():
     ).to(device)
     criterion = nn.CrossEntropyLoss(weight=class_weights)
 
-
     # ============================================================
-    # PHASE 1 - FROZEN BACKBONE
+    # PHASE 1 — FROZEN BACKBONE
     # ============================================================
-    # Only classifier + GPS processor train
-    # Backbone stays frozen at pretrained ImageNet weights
 
     print("\n" + "=" * 50)
     print("PHASE 1 — Frozen backbone")
     print("=" * 50)
 
     freeze_backbone(model)
-    # sets requires_grad=False on backbone weights
 
     optimiser_phase1 = torch.optim.Adam(
         filter(lambda p: p.requires_grad, model.parameters()),
         lr=LR_PHASE1
     )
-    # only passes TRAINABLE parameters to optimiser
-    # frozen backbone excluded
 
     best_val_accuracy_p1 = 0.0
-    train_losses_p1 = []
-    val_losses_p1 = []
-    val_accuracies_p1 = []
+    train_losses_p1      = []
+    val_losses_p1        = []
+    val_accuracies_p1    = []
 
     for epoch in range(1, EPOCHS_PHASE1 + 1):
         print(f"\nPhase 1 | Epoch {epoch}/{EPOCHS_PHASE1}")
@@ -315,13 +304,14 @@ def train():
 
         print(f"  Val loss: {val_loss:.4f} | "
               f"Val accuracy: {val_accuracy:.2f}%")
+
         train_losses_p1.append(train_loss)
         val_losses_p1.append(val_loss)
         val_accuracies_p1.append(val_accuracy)
 
-        plot_training_progress(train_losses_p1, val_losses_p1, val_accuracies_p1, phase=1)
-
-
+        plot_training_progress(
+            train_losses_p1, val_losses_p1, val_accuracies_p1, phase=1
+        )
 
         if val_accuracy > best_val_accuracy_p1:
             best_val_accuracy_p1 = val_accuracy
@@ -335,49 +325,46 @@ def train():
             print(f"  ✓ Saved best Phase 1 model "
                   f"(val_acc={val_accuracy:.2f}%)")
 
-    # Phase 1 loop ends here
+        # log to TensorBoard
+        writer.add_scalar("Phase1/Train_Loss", train_loss, epoch)
+        writer.add_scalar("Phase1/Val_Loss", val_loss, epoch)
+        writer.add_scalar("Phase1/Val_Accuracy", val_accuracy, epoch)
+
     print(f"\nPhase 1 complete. "
           f"Best val accuracy: {best_val_accuracy_p1:.2f}%")
 
-
     # ============================================================
-    # PHASE 2  FULL FINE-TUNING
+    # PHASE 2 — FULL FINE-TUNING
     # ============================================================
-    # Entire network trains with small learning rate
-    # Backbone gently adapts to NZ road images
 
     print("\n" + "=" * 50)
     print("PHASE 2 — Full fine-tuning")
     print("=" * 50)
 
-    # load best Phase 1 weights
     best_phase1_path = CHECKPOINT_DIR / "best_phase1.pth"
-    checkpoint = torch.load(best_phase1_path, map_location=device)
+    checkpoint       = torch.load(best_phase1_path, map_location=device)
     model.load_state_dict(checkpoint["model"])
     print("[Train] Loaded best Phase 1 weights")
 
     unfreeze_backbone(model)
-    # sets requires_grad=True on ALL weights
 
     optimiser_phase2 = torch.optim.Adam(
         model.parameters(),
         lr=LR_PHASE2
-        # much smaller LR to protect pretrained weights
     )
 
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimiser_phase2,
-        mode="max",      # we want accuracy to go UP
-        factor=0.5,      # halve LR when plateauing
-        patience=3,      # wait 3 epochs before reducing
-
+        mode="max",
+        factor=0.5,
+        patience=3,
     )
 
     best_val_accuracy_p2 = 0.0
     no_improve_count     = 0
-    train_losses_p2 = []
-    val_losses_p2 = []
-    val_accuracies_p2 = []
+    train_losses_p2      = []
+    val_losses_p2        = []
+    val_accuracies_p2    = []
 
     for epoch in range(1, EPOCHS_PHASE2 + 1):
         print(f"\nPhase 2 | Epoch {epoch}/{EPOCHS_PHASE2}")
@@ -394,14 +381,16 @@ def train():
         print(f"  Val loss: {val_loss:.4f} | "
               f"Val accuracy: {val_accuracy:.2f}%")
 
-
-
         train_losses_p2.append(train_loss)
         val_losses_p2.append(val_loss)
         val_accuracies_p2.append(val_accuracy)
 
-        plot_training_progress(train_losses_p2, val_losses_p2, val_accuracies_p2, phase=2)
+        plot_training_progress(
+            train_losses_p2, val_losses_p2, val_accuracies_p2, phase=2
+        )
+
         scheduler.step(val_accuracy)
+
         if val_accuracy > best_val_accuracy_p2:
             best_val_accuracy_p2 = val_accuracy
             no_improve_count     = 0
@@ -424,12 +413,16 @@ def train():
                   f"no improvement for {EARLY_STOP_PATIENCE} epochs")
             break
 
-    # Phase 2 loop ends here
+        # log to TensorBoard
+        writer.add_scalar("Phase2/Train_Loss", train_loss, epoch)
+        writer.add_scalar("Phase2/Val_Loss", val_loss, epoch)
+        writer.add_scalar("Phase2/Val_Accuracy", val_accuracy, epoch)
+
     print(f"\nTraining complete!")
     print(f"Best Phase 1 accuracy: {best_val_accuracy_p1:.2f}%")
     print(f"Best Phase 2 accuracy: {best_val_accuracy_p2:.2f}%")
-    print(f"Best model saved to: "
-          f"{CHECKPOINT_DIR / 'best_phase2.pth'}")
+    writer.close()
+    print(f"Best model saved to:   {CHECKPOINT_DIR / 'best_phase2.pth'}")
 
 
 # ================================================================
@@ -458,7 +451,6 @@ def quick_test():
         loss   = criterion(logits, labels)
         loss.backward()
         optimiser.step()
-
         print(f"  Train batch {batch_idx+1} | loss: {loss.item():.4f}")
         if batch_idx >= 1:
             break
@@ -489,5 +481,5 @@ def quick_test():
 if __name__ == "__main__":
     print("GeoSolve Lane Detection — Training")
     print("=" * 50)
-    #quick_test()  # uncomment to test before training
+    # quick_test()
     train()

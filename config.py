@@ -9,75 +9,51 @@ CSV_PATH = (
 DATA_DIR = Path("Data")
 
 TRAIN_CSV = DATA_DIR / "train_local.csv"
-VAL_CSV = DATA_DIR / "val_small.csv"
-TEST_CSV = DATA_DIR / "test.csv"
+VAL_CSV   = DATA_DIR / "val_small.csv"
+TEST_CSV  = DATA_DIR / "test.csv"
 
 # saving training data folder here
 CHECKPOINT_DIR = Path("checkpoints")
-
-# if already exists doesnt crash
-CHECKPOINT_DIR.mkdir(exist_ok = True)
+CHECKPOINT_DIR.mkdir(exist_ok=True)
 
 # resize images for training
 IMG_SIZE = 224
 
-# start with common cases later on i'll add the edge cases
+# lane classes
 LANE_CLASSES = {
-    "1": 0, #lane 1
-    "2": 1, # lane 2
-    "3" : 2,    # lane 3
-    "SK1": 3    # side kurb lane
-
+    "1":   0,
+    "2":   1,
+    "3":   2,
+    "SK1": 3,
 }
 
-IDX_TO_LANE = {v: k for k, v in LANE_CLASSES.items()}   # switch key and value
+IDX_TO_LANE = {v: k for k, v in LANE_CLASSES.items()}
 
-N_CLASSES = len(LANE_CLASSES)   # 4 at the miment
+N_CLASSES = len(LANE_CLASSES)
 
-MODEL_NAME = "efficientnet_b0" # from TIMM library,  b0 = smallest and fastest EfficientNet,  upgrade to b2 or b4 later if accuracy needs improvement
+MODEL_NAME = "efficientnet_b0"
 
-BATCH_SIZE = 64 # images processed together
-
-SEQ_LEN = 10     #consecutive fed to the model at once
-
-LR_PHASE1 = 1e-3 # learning data rate phase 1
-
-LR_PHASE2 = 1e-5  # leaning data rate phase 2
-
-EPOCHS_PHASE1 = 5  # traiing epochs for phase 1
-
-EPOCHS_PHASE2 = 30  # training epochs for phase 2
-
-EARLY_STOP_PATIENCE = 7 # stop if value accuracy doesnt improve for 7 epochs
-
-SEED = 42    # new random (42)
-NUM_WORKERS = 4
+BATCH_SIZE          = 64
+NUM_WORKERS         = 4
+LR_PHASE1           = 1e-3
+LR_PHASE2           = 1e-5
+EPOCHS_PHASE1       = 5
+EPOCHS_PHASE2       = 30
+EARLY_STOP_PATIENCE = 7
+SEQ_LEN             = 10
+SEED                = 42
 
 TEST_SEGMENTS = [
     "250357 UHCC_25_LMD",
 ]
-# UHCC has 87,014 rows — good size for test set
 
 VAL_SEGMENTS = [
     "250821 KaikouraDC_Network25_LMD Demo",
     "250846 DunedinCC LMD Network26",
 ]
-# DunedinCC has Lane 3 (685 rows) ← important
-# KaikouraDC adds more val data
 
-OSM_DATA_PATH = Path("Data/nz_roads.graphml")
-OSM_SEARCH_RADIUS = 50
-OSM_LANES_FORWARD_COL = "lanes_forward"
-OSM_ROAD_TYPE_COL = "road_type"
-OSM_ONEWAY_COL = "oneway"
-
-
-
-
-
-
-
-
-
-
-
+OSM_DATA_PATH          = Path("Data/nz_roads.graphml")
+OSM_SEARCH_RADIUS      = 50
+OSM_LANES_FORWARD_COL  = "lanes_forward"
+OSM_ROAD_TYPE_COL      = "road_type"
+OSM_ONEWAY_COL         = "oneway"
