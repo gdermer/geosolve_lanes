@@ -221,7 +221,47 @@ def predict( input_csv, output_csv, checkpoint_path = None, threshold = 0.90, ba
     for lane, count in df["Lane_AI"].value_counts().items():
         pct= count/len(df)*100
         print(f" {lane:>8} {count:>10,} ({pct:.1f}%)")
+        # ---- log embeddings to TensorBoard ----
+        print(f"\n[TensorBoard] Computing prediction embeddings...")
+        from torch.utils.tensorboard import SummaryWriter
+        import torch.nn.functional as F
+
+        writer = SummaryWriter(log_dir="runs/geosolve_predictions")
+
+        # take 500 random samples for visualization
+        sample_df = predict_df.sample(min(500, len(predict_df)), random_state=42).reset_index(drop=True)
+        sample_dataset = PredictionDataset(sample_df, path_prefix=path_prefix)
+        sample_loader = DataLoader(sample_dataset, batch_size=32, shuffle=False, num_workers=0)
+
+        features_list = []
+        labels_list = []
+        images_list = []
+
+        model.eval()
+        with torch.no_grad():
+            for imgs, gps, indices, valids in sample_loader:
+                imgs = imgs.to(device)
+                gps = gps.to(device)
+
+                # extract backbone features
+                image_features = model.backbone(imgs)
+                features_list.append(image_features.cpu())
+
+                # use predicted lane as label
+                logits = model(imgs, gps)
+                _, predicted = torch.softmax(logits, dim=1).max(dim=1)
+                labels_list.append(predicted.cpu())
+
+                # resize images to 32x32 for thumbnails
+                small = F.interpolate(
+                    imgs.cpu(), size=(32, 32),
+                    mode="bilinear", align_corners=False
+                )
+                images_list.append(small)
+
+        features = torch.cat(features_list)
     return df
+
 
 # command line inteface
 

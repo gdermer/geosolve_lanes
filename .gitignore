@@ -36,3 +36,11 @@ Thumbs.db
 Data/
 data/
 *.csv
+
+runs/
+checkpoints/
+Data/
+__pycache__/
+*.pth
+*.pyc
+.venv/

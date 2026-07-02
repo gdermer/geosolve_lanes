@@ -1,6 +1,9 @@
 import torch
 import numpy as np
 import matplotlib
+from torch.utils.tensorboard import SummaryWriter
+
+from train import log_embeddings
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -8,6 +11,7 @@ from pathlib import Path
 from config import (N_CLASSES, LANE_CLASSES,  IDX_TO_LANE, CHECKPOINT_DIR, BATCH_SIZE, NUM_WORKERS)
 from dataset import get_test_loader
 from model import load_trained_model
+
 
 def compute_confusion_matrix(all_labels, all_predictions, n_classes):
 
@@ -115,7 +119,7 @@ def evaluate_model(checkpoint_path, device = "cpu"):
     thresholds = [0.70, 0.80, 0.90, 0.95]
     for thresh in thresholds:
         auto_coded = (all_confidences>= thresh).mean()*100
-        print(f" >= {thresh:.0f} confidence: "
+        print(f" >= {thresh:.0%} confidence: "
               f"{auto_coded:.1f}% auto coded,"
               f"{100-auto_coded:.1f}% needs review")
 
@@ -155,6 +159,13 @@ def evaluate_model(checkpoint_path, device = "cpu"):
                     f"{class_correct:,}/{class_total:,}\n")
     print(f"\n[evaluate] results saved --> {results_path}")
     print(f"\n evaluation complete")
+    # ---- log embeddings to TensorBoard ----
+    writer = SummaryWriter(log_dir="runs/geosolve_evaluation")
+    log_embeddings(model, test_loader, writer, device,
+                   tag="Test_embeddings", max_images=500)
+    writer.close()
+    print("[TensorBoard] Evaluation embeddings logged")
+    print("View at: tensorboard --logdir=runs")
     return overall_accuracy
 
 

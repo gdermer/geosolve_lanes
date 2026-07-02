@@ -25,7 +25,7 @@ from config import (
     NUM_WORKERS,
     CHECKPOINT_DIR,
     LANE_CLASSES,
-    N_CLASSES,
+    N_CLASSES, IDX_TO_LANE,
 )
 from dataset import get_train_loader, get_val_loader
 from model import get_model, freeze_backbone, unfreeze_backbone, count_parameters
@@ -228,6 +228,85 @@ def evaluate(model, loader, criterion, device):
 
 
 # ================================================================
+# LOG EMBEDDINGS TO TENSORBOARD
+# ================================================================
+
+def log_embeddings(model, loader, writer, device, tag="embeddings", max_images=500):
+    """
+    Logs image embeddings to TensorBoard for 3D visualization.
+
+    Shows how the model groups images in feature space.
+    Similar images cluster together — good separation = model learned well.
+
+    model:      trained model
+    loader:     data loader (val or test)
+    writer:     TensorBoard SummaryWriter
+    device:     cpu or cuda
+    tag:        name shown in TensorBoard
+    max_images: how many images to visualize (keep low for performance)
+    """
+    print(f"[TensorBoard] Computing embeddings for {tag}...")
+    model.eval()
+
+    features_list = []
+    labels_list = []
+    images_list = []
+    count = 0
+
+    with torch.no_grad():
+        for images, gps, labels in loader:
+            images = images.to(device)
+            gps = gps.to(device)
+
+            # extract features BEFORE the final classifier
+            # these are the 1280-dim image features from EfficientNet
+            image_features = model.backbone(images)
+            # shape: (batch_size, 1280)
+
+            features_list.append(image_features.cpu())
+            labels_list.append(labels.cpu())
+
+            # store small version of images for the thumbnail preview
+            # TensorBoard shows the actual image when you hover over a dot
+            # resize to 32x32 to save memory
+            small_images = torch.nn.functional.interpolate(
+                images.cpu(), size=(32, 32), mode="bilinear", align_corners=False
+            )
+            images_list.append(small_images)
+
+            count += images.shape[0]
+            if count >= max_images:
+                break
+
+    # concatenate all batches
+    features = torch.cat(features_list)[:max_images]
+    labels = torch.cat(labels_list)[:max_images]
+    imgs = torch.cat(images_list)[:max_images]
+
+    # convert label indices to lane names for the legend
+    label_names = [IDX_TO_LANE[l.item()] for l in labels]
+
+    # normalize images to [0,1] for display
+    # (they were normalized for training, need to reverse for display)
+    imgs = imgs - imgs.min()
+    imgs = imgs / imgs.max()
+
+    # add to TensorBoard
+    writer.add_embedding(
+        features,
+        metadata=label_names,
+        label_img=imgs,
+        tag=tag,
+        global_step=0
+    )
+
+    # count per class
+    from collections import Counter
+    counts = Counter(label_names)
+    print(f"[TensorBoard] Embeddings logged: {tag}")
+    print(f"  Classes: {dict(counts)}")
+
+# ================================================================
 # MAIN TRAINING FUNCTION
 # ================================================================
 
@@ -423,6 +502,22 @@ def train():
     print(f"\nTraining complete!")
     print(f"Best Phase 1 accuracy: {best_val_accuracy_p1:.2f}%")
     print(f"Best Phase 2 accuracy: {best_val_accuracy_p2:.2f}%")
+
+    # ---- log embeddings after Phase 1 ----
+    print("\nLogging Phase 1 embeddings to TensorBoard...")
+    # reload best phase 1 model first
+    checkpoint = torch.load(CHECKPOINT_DIR / "best_phase1.pth", map_location=device)
+    model.load_state_dict(checkpoint["model"])
+    log_embeddings(model, val_loader, writer, device,
+                   tag="Phase1_embeddings", max_images=500)
+
+    # ---- log embeddings after Phase 2 ----
+    print("\nLogging Phase 2 embeddings to TensorBoard...")
+    checkpoint = torch.load(CHECKPOINT_DIR / "best_phase2.pth", map_location=device)
+    model.load_state_dict(checkpoint["model"])
+    log_embeddings(model, val_loader, writer, device,
+                   tag="Phase2_embeddings", max_images=500)
+
     writer.close()
     print(f"Best model saved to:   {CHECKPOINT_DIR / 'best_phase2.pth'}")
 
