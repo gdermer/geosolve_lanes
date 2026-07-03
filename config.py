@@ -8,8 +8,8 @@ CSV_PATH = (
 
 DATA_DIR = Path("Data")
 
-TRAIN_CSV = DATA_DIR / "train_local.csv"
-VAL_CSV   = DATA_DIR / "val_small.csv"
+TRAIN_CSV = DATA_DIR / "chunks/train_chunk_02_local.csv"
+VAL_CSV   = DATA_DIR / "val_real.csv"
 TEST_CSV  = DATA_DIR / "test.csv"
 
 # saving training data folder here

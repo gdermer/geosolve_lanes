@@ -3,6 +3,7 @@
 # The training loop — connects dataset.py and model.py
 # Phase 1: frozen backbone (5 epochs)
 # Phase 2: full fine-tuning (up to 30 epochs)
+import math
 
 import torch
 import torch.nn as nn
@@ -310,7 +311,7 @@ def log_embeddings(model, loader, writer, device, tag="embeddings", max_images=5
 # MAIN TRAINING FUNCTION
 # ================================================================
 
-def train():
+def train(resume_from=None):
     """
     Full training pipeline.
     Phase 1: backbone frozen, only classifier trains (5 epochs)
@@ -335,6 +336,11 @@ def train():
     # build model
     print("[Train] Building model...")
     model = get_model(pretrained=True).to(device)
+    # if resuming from previous chunk, load those weights
+    if resume_from is not None and Path(resume_from).exists():
+        checkpoint = torch.load(resume_from, map_location=device)
+        model.load_state_dict(checkpoint["model"])
+        print(f"[Train] Resumed from: {resume_from}")
 
     # setup TensorBoard writer
     writer = SummaryWriter(log_dir="runs/geosolve_training")
@@ -346,7 +352,7 @@ def train():
     class_counts  = [2193795, 82741, 10709, 4480]
     total_count   = sum(class_counts)
     class_weights = torch.tensor(
-        [total_count / (N_CLASSES * count) for count in class_counts],
+        [math.sqrt(total_count / (N_CLASSES * count)) for count in class_counts],
         dtype=torch.float32
     ).to(device)
     criterion = nn.CrossEntropyLoss()
@@ -579,4 +585,4 @@ if __name__ == "__main__":
     print("GeoSolve Lane Detection — Training")
     print("=" * 50)
     # quick_test()
-    train()
+    train(resume_from="checkpoints/best_phase2.pth")

@@ -148,20 +148,29 @@ def predict( input_csv, output_csv, checkpoint_path = None, threshold = 0.90, ba
                 conf = confidence[i].item()
                 cls_idx = predicted_class[i].item()
                 is_valid = bool(valids[i].item())
-
+                CLASS_THRESHOLDS = {
+                    "1": 0.90,  # Lane 1: auto-code if 90%+ confident
+                    "2": 0.97,  # Lane 2: auto-code only if 97%+ confident
+                    "3": 0.99,  # Lane 3: almost always manual
+                    "SK1": 0.99,  # SK1: almost always manual
+                }
                 if not is_valid:
                     # image file couldnt be loaded
                     lane_code = "REVIEW"
                     needs_review = True
                     n_invalid +=1
-                elif conf>= threshold:
-                    lane_code = IDX_TO_LANE[cls_idx]
-                    needs_review = False
-                    n_auto_coded +=1
+                    # per-class thresholds
+
                 else:
-                    lane_code - IDX_TO_LANE[cls_idx]
-                    needs_review = True
-                    n_review+=1
+                    lane_code = IDX_TO_LANE[cls_idx]
+                    class_thresh = CLASS_THRESHOLDS.get(lane_code, threshold)
+
+                    if conf >= class_thresh:
+                        needs_review = False
+                        n_auto_coded += 1
+                    else:
+                        needs_review = True
+                        n_review += 1
                 all_predictions[row_idx] = {
                     "lane": lane_code,
                     "confidence": round(conf,3),
