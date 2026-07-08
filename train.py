@@ -145,7 +145,7 @@ def train_one_epoch(model, loader, optimiser, criterion, device, epoch):
 
         loss = criterion(logits, labels)
 
-        # skip NaN batches BEFORE backward — prevent gradient corruption
+        # skip NaN batches BEFORE backward - prevent gradient corruption
         if torch.isnan(loss) or torch.isinf(loss):
             print(f"  WARNING: NaN loss at batch {batch_idx + 1}, skipping")
             optimiser.zero_grad()
@@ -421,7 +421,7 @@ def train(resume_from=None):
           f"Best val accuracy: {best_val_accuracy_p1:.2f}%")
 
     # ============================================================
-    # PHASE 2 — FULL FINE-TUNING
+    # PHASE 2 - FULL FINE-TUNING
     # ============================================================
 
     print("\n" + "=" * 50)
