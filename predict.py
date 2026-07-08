@@ -34,7 +34,7 @@ class PredictionDataset(Dataset):
     def __getitem__(self,idx):
         row = self.df.iloc[idx]
 
-        filepath = str(row["FIlepath"]).replace("\\","/")
+        filepath = str(row["Filepath"]).replace("\\","/")
         if self.path_prefix:
             filepath = filepath.replace("J:/", self.path_prefix)
 
