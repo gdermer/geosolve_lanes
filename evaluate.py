@@ -52,60 +52,6 @@ def plot_confusion_matrix(matrix, class_names, save_path):
     plt.close(fig)
     print(f"[evaluate] confusion matrix saved --> {save_path}")
 
-    from sklearn.metrics import (
-        f1_score, precision_score, recall_score, classification_report
-    )
-
-    # ---- Per class and aggregate metrics ----
-    print(f"\n{'=' * 50}")
-    print(f"SKLEARN METRICS")
-    print(f"{'=' * 50}")
-
-    # full classification report
-    print(f"\nClassification Report:")
-    print(classification_report(
-        all_labels,
-        all_predictions,
-        target_names=class_names,
-        digits=3
-    ))
-
-    # macro F1 (unweighted - shows if balanced across classes)
-    macro_f1 = f1_score(all_labels, all_predictions, average='macro')
-    macro_precision = precision_score(all_labels, all_predictions, average='macro')
-    macro_recall = recall_score(all_labels, all_predictions, average='macro')
-
-    # weighted F1 (weighted by class frequency - comparable to accuracy)
-    weighted_f1 = f1_score(all_labels, all_predictions, average='weighted')
-    weighted_precision = precision_score(all_labels, all_predictions, average='weighted')
-    weighted_recall = recall_score(all_labels, all_predictions, average='weighted')
-
-    print(f"Macro metrics (unweighted average across classes):")
-    print(f"  Macro F1:        {macro_f1:.3f}")
-    print(f"  Macro Precision: {macro_precision:.3f}")
-    print(f"  Macro Recall:    {macro_recall:.3f}")
-
-    print(f"\nWeighted metrics (weighted by class frequency):")
-    print(f"  Weighted F1:        {weighted_f1:.3f}")
-    print(f"  Weighted Precision: {weighted_precision:.3f}")
-    print(f"  Weighted Recall:    {weighted_recall:.3f}")
-
-    print(f"\nComparison:")
-    print(f"  Overall accuracy:  {overall_accuracy:.3f}%")
-    print(f"  Weighted F1:       {weighted_f1:.3f}  <- comparable to accuracy")
-    print(f"  Macro F1:          {macro_f1:.3f}  <- shows class balance")
-    print(f"  Previous team F1:  0.640            <- their best result")
-
-    # save to results file
-    with open(results_path, 'a') as f:
-        f.write(f"\nSKLEARN METRICS\n")
-        f.write(f"{'=' * 50}\n")
-        f.write(f"Macro F1:        {macro_f1:.3f}\n")
-        f.write(f"Macro Precision: {macro_precision:.3f}\n")
-        f.write(f"Macro Recall:    {macro_recall:.3f}\n")
-        f.write(f"Weighted F1:     {weighted_f1:.3f}\n")
-        f.write(f"Weighted Precision: {weighted_precision:.3f}\n")
-        f.write(f"Weighted Recall:    {weighted_recall:.3f}\n")
 
 def evaluate_model(checkpoint_path, device = "cpu"):
     # loads train model and evaluates on test set
@@ -195,7 +141,64 @@ def evaluate_model(checkpoint_path, device = "cpu"):
     plot_path = CHECKPOINT_DIR / "confusion_matrix.png"
     plot_confusion_matrix(matrix, class_names, plot_path)
 
+    from sklearn.metrics import (
+        f1_score, precision_score, recall_score, classification_report
+    )
+
+    # ---- Per class and aggregate metrics ----
+    print(f"\n{'=' * 50}")
+    print(f"SKLEARN METRICS")
+    print(f"{'=' * 50}")
+
+    # full classification report
+    print(f"\nClassification Report:")
+    print(classification_report(
+        all_labels,
+        all_predictions,
+        target_names=class_names,
+        digits=3
+    ))
+
     results_path = CHECKPOINT_DIR / "evaluation_results.txt"
+
+    # macro F1 (unweighted - shows if balanced across classes)
+    macro_f1 = f1_score(all_labels, all_predictions, average='macro')
+    macro_precision = precision_score(all_labels, all_predictions, average='macro')
+    macro_recall = recall_score(all_labels, all_predictions, average='macro')
+
+    # weighted F1 (weighted by class frequency - comparable to accuracy)
+    weighted_f1 = f1_score(all_labels, all_predictions, average='weighted')
+    weighted_precision = precision_score(all_labels, all_predictions, average='weighted')
+    weighted_recall = recall_score(all_labels, all_predictions, average='weighted')
+
+    print(f"Macro metrics (unweighted average across classes):")
+    print(f"  Macro F1:        {macro_f1:.3f}")
+    print(f"  Macro Precision: {macro_precision:.3f}")
+    print(f"  Macro Recall:    {macro_recall:.3f}")
+
+    print(f"\nWeighted metrics (weighted by class frequency):")
+    print(f"  Weighted F1:        {weighted_f1:.3f}")
+    print(f"  Weighted Precision: {weighted_precision:.3f}")
+    print(f"  Weighted Recall:    {weighted_recall:.3f}")
+
+    print(f"\nComparison:")
+    print(f"  Overall accuracy:  {overall_accuracy:.3f}%")
+    print(f"  Weighted F1:       {weighted_f1:.3f}  <- comparable to accuracy")
+    print(f"  Macro F1:          {macro_f1:.3f}  <- shows class balance")
+    print(f"  Previous team F1:  0.640            <- their best result")
+
+    # save to results file
+    with open(results_path, 'a') as f:
+        f.write(f"\nSKLEARN METRICS\n")
+        f.write(f"{'=' * 50}\n")
+        f.write(f"Macro F1:        {macro_f1:.3f}\n")
+        f.write(f"Macro Precision: {macro_precision:.3f}\n")
+        f.write(f"Macro Recall:    {macro_recall:.3f}\n")
+        f.write(f"Weighted F1:     {weighted_f1:.3f}\n")
+        f.write(f"Weighted Precision: {weighted_precision:.3f}\n")
+        f.write(f"Weighted Recall:    {weighted_recall:.3f}\n")
+
+
     with open(results_path, "w") as f:
         f.write(f"Geosolve lane detection- evaluaitonl results\n")
         f.write(f"{'='*50}\n")
