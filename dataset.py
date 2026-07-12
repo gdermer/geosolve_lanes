@@ -117,9 +117,13 @@ class LaneDataset(Dataset):
         road_type_str = str(row.get("road_type", "unknown"))       # return road type and unknown as default
         road_type = road_type_map.get(road_type_str, 0.0)
 
-        bearing = float(row.get("Bearing", 0))
-        if bearing > 360:
-            bearing = 0.0          # in case of bearing 1000 unknown
+        bearing = row.get("Bearing", 0)
+        try:
+            bearing = float(bearing)
+            if bearing != bearing or bearing > 360:
+                bearing = 0.0
+        except:
+            bearing = 0.0
 
 
         bearing_rad = np.radians(bearing) # converting the angle to sin/cos
