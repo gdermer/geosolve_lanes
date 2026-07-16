@@ -52,7 +52,7 @@ class PredictionDataset(Dataset):
             valid = True
 
         transformed = self.transform(image = img)
-        img_tensor = transformed(["image"])
+        img_tensor = transformed["image"]
 
 
         # GPS features:
@@ -132,7 +132,7 @@ def predict( input_csv, output_csv, checkpoint_path = None, threshold = 0.90, ba
     n_invalid = 0
 
     with torch.no_grad():
-        for batch_idx, (imgage, gps, indices, valids) in enumerate(loader):
+        for batch_idx, (images, gps, indices, valids) in enumerate(loader):
             images = images.to(device)
             gps = gps.to(device)
 
@@ -207,7 +207,7 @@ def predict( input_csv, output_csv, checkpoint_path = None, threshold = 0.90, ba
 
     # save to disk
     output_path = Path(output_csv)
-    output_path.parent.mkdir(parent= True, exist_ok = true)
+    output_path.parent.mkdir(parents= True, exist_ok = True)
     df.to_csv(output_csv, index = False)
 
     # print summary:
