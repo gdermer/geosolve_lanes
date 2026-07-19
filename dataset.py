@@ -69,7 +69,7 @@ class LaneDataset(Dataset):
 
         filepath = row["Filepath"]  # load the image
         filepath = str(filepath).replace("\\", "/")
-        if self.path_prefix: # if a prefi is set
+        if self.path_prefix: # if a prefix is set
             filepath = filepath.replace("J:/", self.path_prefix)
 
         # load image
