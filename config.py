@@ -8,7 +8,7 @@ CSV_PATH = (
 
 DATA_DIR = Path("Data")
 
-TRAIN_CSV = DATA_DIR / "chunks_v2/train_chunk_v2_02_local.csv"
+TRAIN_CSV = DATA_DIR / "chunks_v3/train_chunk_v3_01_local.csv"
 VAL_CSV   = DATA_DIR / "val_real.csv"
 TEST_CSV  = DATA_DIR / "test.csv"
 
@@ -25,11 +25,11 @@ LANE_CLASSES = {
     "2":   1,
     "3":   2,
     "SK1": 3,
+    "4":   4,
 }
 
 IDX_TO_LANE = {v: k for k, v in LANE_CLASSES.items()}
-
-N_CLASSES = len(LANE_CLASSES)
+N_CLASSES = len(LANE_CLASSES)  # now automatically 5
 
 MODEL_NAME = "efficientnet_b0"
 

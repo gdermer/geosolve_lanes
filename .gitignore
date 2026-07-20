@@ -44,3 +44,11 @@ __pycache__/
 *.pth
 *.pyc
 .venv/
+
+# jar artifact
+jar_artifact/
+*.jar
+
+# predictions files 
+Files_predictions/
+*.csv
