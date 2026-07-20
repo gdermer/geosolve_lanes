@@ -160,8 +160,6 @@ def train_one_epoch(model, loader, optimiser, criterion, device, epoch):
         # STEP 5: update weights
         optimiser.step()
 
-
-
         # track statistics
         total_loss   += loss.item()
         predicted     = logits.argmax(dim=1)
@@ -336,25 +334,48 @@ def train(resume_from=None):
     # build model
     print("[Train] Building model...")
     model = get_model(pretrained=True).to(device)
+
     # if resuming from previous chunk, load those weights
+    # uses a PARTIAL load — any layer whose shape doesn't match
+    # (e.g. the final classifier layer when N_CLASSES changes)
+    # is skipped and left at its freshly-initialized value,
+    # while everything else (backbone, gps_processor, etc.)
+    # transfers over normally
     if resume_from is not None and Path(resume_from).exists():
-        checkpoint = torch.load(resume_from, map_location=device)
-        model.load_state_dict(checkpoint["model"])
+        checkpoint     = torch.load(resume_from, map_location=device)
+        old_state_dict = checkpoint["model"]
+        new_state_dict = model.state_dict()
+
+        transferred = []
+        skipped     = []
+
+        for key in old_state_dict:
+            if key in new_state_dict and old_state_dict[key].shape == new_state_dict[key].shape:
+                new_state_dict[key] = old_state_dict[key]
+                transferred.append(key)
+            else:
+                skipped.append(key)
+
+        model.load_state_dict(new_state_dict)
+
         print(f"[Train] Resumed from: {resume_from}")
+        print(f"[Train] Transferred {len(transferred)} layers, "
+              f"skipped {len(skipped)} layers (shape mismatch — reinitialized)")
+        if skipped:
+            print(f"[Train] Skipped layers: {skipped}")
+    elif resume_from is not None:
+        print(f"[Train] WARNING: checkpoint not found: {resume_from}")
 
     # setup TensorBoard writer
     writer = SummaryWriter(log_dir="runs/geosolve_training")
     print("[Train] TensorBoard logging to: runs/geosolve_training")
     print("[Train] Run: tensorboard --logdir=runs")
 
-    # loss function with class weights
-    # handles imbalance: Lane1=95.8%, SK1=0.2%
-    class_counts  = [2193795, 82741, 10709, 4480]
-    total_count   = sum(class_counts)
-    class_weights = torch.tensor(
-        [math.sqrt(total_count / (N_CLASSES * count)) for count in class_counts],
-        dtype=torch.float32
-    ).to(device)
+    # loss function
+    # NOTE: class_weights below are currently computed but NOT applied
+    # to the criterion — kept as CrossEntropyLoss() without weights
+    # since weighted loss previously caused NaN training issues.
+    # Left here in case you want to re-enable weighting later.
     criterion = nn.CrossEntropyLoss()
 
     # ============================================================
@@ -585,4 +606,4 @@ if __name__ == "__main__":
     print("GeoSolve Lane Detection — Training")
     print("=" * 50)
     # quick_test()
-    train(resume_from="checkpoints/best_phase2.pth")
+    train(resume_from="checkpoints/best_phase2_chunks_v2_final.pth")
